@@ -457,19 +457,28 @@
     </div>
 
     <script>
-        // --- Intro Loader ---
-        window.addEventListener('load', () => {
+                // --- Intro Loader (FIXED) ---
+        document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const loader = document.getElementById('loader-wrapper');
                 const content = document.getElementById('appContent');
-                loader.style.opacity = '0';
-                setTimeout(() => {
-                    loader.style.visibility = 'hidden';
-                    content.style.display = 'block';
-                    content.querySelector('.container').style.animation = 'fadeInDown 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
-                }, 500);
+                
+                if(loader && content) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.style.visibility = 'hidden';
+                        loader.style.display = 'none'; // Completely hide from DOM space
+                        content.style.display = 'block';
+                        
+                        const container = content.querySelector('.container');
+                        if(container) {
+                            container.style.animation = 'fadeInDown 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+                        }
+                    }, 500);
+                }
             }, 1200); 
         });
+
 
         const form = document.getElementById('trackerForm');
         const recordList = document.getElementById('recordList');
