@@ -33,7 +33,7 @@
             overflow-x: hidden;
         }
 
-        /* --- Loading Animation CSS --- */
+        /* --- BULLETPROOF CSS-ONLY LOADER --- */
         #loader-wrapper {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -43,8 +43,15 @@
             justify-content: center;
             align-items: center;
             z-index: 99999;
-            transition: opacity 0.5s ease, visibility 0.5s;
+            /* অটোমেটিক হাইড হয়ে যাবে ১.২ সেকেন্ড পর */
+            animation: hideLoader 0.5s ease-in-out forwards 1.2s;
+            pointer-events: none; /* কন্টেন্টে ক্লিক করতে বাধা দেবে না */
         }
+        @keyframes hideLoader {
+            0% { opacity: 1; visibility: visible; }
+            100% { opacity: 0; visibility: hidden; z-index: -1; }
+        }
+
         .digital-spinner {
             width: 60px;
             height: 60px;
@@ -65,7 +72,13 @@
 
         /* --- Main Content CSS --- */
         #appContent {
-            display: none; 
+            /* জাভাস্ক্রিপ্টের উপর নির্ভরতা কমানোর জন্য CSS দিয়েই শো করানো হলো */
+            opacity: 0;
+            animation: showContent 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards 1.4s;
+        }
+        @keyframes showContent {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .container { 
@@ -88,7 +101,6 @@
             font-size: 26px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         p.subtitle {
             text-align: center;
@@ -97,21 +109,12 @@
             font-size: 14px;
             letter-spacing: 1.5px;
             margin-bottom: 30px;
-            animation: fadeIn 1s ease-in;
         }
 
         .input-group {
             margin-bottom: 18px;
             position: relative;
-            animation: slideInRight 0.5s ease-out backwards;
         }
-        /* Staggered form animation */
-        .input-group:nth-child(1) { animation-delay: 0.1s; }
-        .input-group:nth-child(2) { animation-delay: 0.2s; }
-        .input-group:nth-child(3) { animation-delay: 0.3s; }
-        .input-group:nth-child(4) { animation-delay: 0.4s; }
-        .input-group:nth-child(5) { animation-delay: 0.5s; }
-
         label { 
             font-weight: 400; 
             display: block; 
@@ -165,14 +168,11 @@
             cursor: pointer; 
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0, 240, 255, 0.3);
-            animation: slideInRight 0.5s ease-out backwards;
-            animation-delay: 0.6s;
         }
         button.submit-btn:hover { 
             transform: translateY(-3px) scale(1.02);
             box-shadow: 0 8px 25px rgba(0, 240, 255, 0.5);
         }
-        button.submit-btn:active { transform: translateY(1px); }
 
         h3 {
             margin-top: 45px;
@@ -250,7 +250,6 @@
             border-top: 1px solid var(--border-color);
         }
         
-        /* WhatsApp Button */
         .whatsapp-link {
             display: inline-flex;
             align-items: center;
@@ -277,7 +276,6 @@
             fill: currentColor;
         }
 
-        /* Scaled Down Fixed Ad Container */
         .fixed-ad-container { 
             position: fixed;
             bottom: 0; left: 0; width: 100%;
@@ -293,7 +291,7 @@
             margin-bottom: 5px;
         }
 
-        /* --- Custom Animated Toast (Success Message) --- */
+        /* --- Toast Notification --- */
         .toast-container {
             position: fixed; top: 20px; right: 20px; z-index: 99999;
             display: flex; flex-direction: column; gap: 10px;
@@ -309,7 +307,7 @@
         }
         .toast.show { transform: translateX(0); opacity: 1; }
 
-        /* --- Custom Animated Modal (Delete Confirmation) --- */
+        /* --- Modal (Delete Confirmation) --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
@@ -342,9 +340,7 @@
         
         .btn-confirm-delete {
             background: var(--danger); color: white; border: none;
-            padding: 14px; border-radius: 10px; font-weight: 600;
-            font-family: 'Outfit', sans-serif; transition: all 0.4s;
-            /* Hidden/Disabled state initially */
+            font-weight: 600; font-family: 'Outfit', sans-serif; transition: all 0.4s;
             opacity: 0; height: 0; padding: 0; overflow: hidden; pointer-events: none;
         }
         .btn-confirm-delete.visible {
@@ -356,14 +352,10 @@
         }
         #countdownText { color: var(--danger); font-weight: bold; font-family: 'Space Grotesk', sans-serif; }
 
-        /* Animations */
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } }
-        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
         @keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideInRight { from { transform: translateX(50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes slideOutLeft { to { transform: translateX(-100%); opacity: 0; height: 0; padding: 0; margin: 0; border: none; } }
     </style>
 </head>
@@ -380,7 +372,7 @@
         <div class="modal-content">
             <div class="modal-icon">⚠️</div>
             <div class="modal-title">Delete Record?</div>
-            <div class="modal-text">This action cannot be undone.Be carefully before deleting data <br><span id="countdownText">Wait 10s...</span></div>
+            <div class="modal-text">This action cannot be undone. <br><span id="countdownText">Wait 10s...</span></div>
             <div class="modal-buttons">
                 <button class="btn-cancel" onclick="closeModal()">Cancel</button>
                 <button class="btn-confirm-delete" id="confirmDeleteBtn" onclick="executeDelete()">Yes, Delete Now</button>
@@ -390,33 +382,29 @@
 
     <div id="appContent">
         <div class="container">
-            <h2>DISINFECTANT MANAGMENT</h2>
-            <p class="subtitle">DISINFECTANT USAGE RECORDS</p>
+            <h2>Digital Tracker</h2>
+            <p class="subtitle">DISINFECTANT USAGE LOG</p>
 
             <form id="trackerForm">
                 <div class="input-group">
                     <label for="date">Select Date & Day:</label>
                     <input type="date" id="date" required>
                 </div>
-
                 <div class="input-group">
-                    <label for="ipa">IPA :</label>
+                    <label for="ipa">IPA (Usage):</label>
                     <input type="number" id="ipa" placeholder="e.g. 500" min="0" step="any">
                     <span class="unit-label">ml</span>
                 </div>
-
                 <div class="input-group">
-                    <label for="dettol">Dettol :</label>
+                    <label for="dettol">Dettol (Usage):</label>
                     <input type="number" id="dettol" placeholder="e.g. 250" min="0" step="any">
                     <span class="unit-label">ml</span>
                 </div>
-
                 <div class="input-group">
-                    <label for="savlon">Savlon :</label>
+                    <label for="savlon">Savlon (Usage):</label>
                     <input type="number" id="savlon" placeholder="e.g. 1000" min="0" step="any">
                     <span class="unit-label">ml</span>
                 </div>
-
                 <div class="input-group">
                     <label for="sodium">Sodium hypochlorite:</label>
                     <input type="number" id="sodium" placeholder="e.g. 1500" min="0" step="any">
@@ -427,8 +415,7 @@
             </form>
 
             <h3>Previous Records</h3>
-            <div id="recordList">
-                </div>
+            <div id="recordList"></div>
 
             <div class="footer">
                 <a href="https://wa.me/8801910254667" target="_blank" class="whatsapp-link">
@@ -457,34 +444,12 @@
     </div>
 
     <script>
-                // --- Intro Loader (FIXED) ---
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                const loader = document.getElementById('loader-wrapper');
-                const content = document.getElementById('appContent');
-                
-                if(loader && content) {
-                    loader.style.opacity = '0';
-                    setTimeout(() => {
-                        loader.style.visibility = 'hidden';
-                        loader.style.display = 'none'; // Completely hide from DOM space
-                        content.style.display = 'block';
-                        
-                        const container = content.querySelector('.container');
-                        if(container) {
-                            container.style.animation = 'fadeInDown 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
-                        }
-                    }, 500);
-                }
-            }, 1200); 
-        });
-
+        // জাভাস্ক্রিপ্ট লোডারের কোড পুরোটাই রিমুভ করা হয়েছে, এখন এটি ১০০% CSS-এ চলবে।
 
         const form = document.getElementById('trackerForm');
         const recordList = document.getElementById('recordList');
         document.getElementById('date').valueAsDate = new Date();
 
-        // --- Toast Notification Logic ---
         function showToast(message) {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -492,8 +457,117 @@
             toast.innerHTML = `✅ ${message}`;
             container.appendChild(toast);
             
-            // Trigger animation
             setTimeout(() => toast.classList.add('show'), 10);
             
-            // Remove after 3.5 seconds
-            setTimeout(() 
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 600);
+            }, 3500);
+        }
+
+        function loadRecords() {
+            const records = JSON.parse(localStorage.getItem('usageRecordsEn')) || [];
+            recordList.innerHTML = '';
+            
+            if(records.length === 0) {
+                recordList.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-style: italic; font-size: 14px;">No records added yet.</p>';
+                return;
+            }
+            
+            records.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            records.forEach((record, index) => {
+                const dateObj = new Date(record.date);
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                const formattedDate = dateObj.toLocaleDateString('en-US', options);
+
+                const card = document.createElement('div');
+                card.className = 'record-card';
+                card.id = `record-${index}`;
+                card.style.animationDelay = `${index * 0.1}s`; 
+                
+                card.innerHTML = `
+                    <span class="record-date">🗓️ ${formattedDate}</span>
+                    <div class="record-item"><span>IPA:</span> <span class="val">${record.ipa || 0} ml</span></div>
+                    <div class="record-item"><span>Dettol:</span> <span class="val">${record.dettol || 0} ml</span></div>
+                    <div class="record-item"><span>Savlon:</span> <span class="val">${record.savlon || 0} ml</span></div>
+                    <div class="record-item"><span>Sodium hypochlorite:</span> <span class="val">${record.sodium || 0} ml</span></div>
+                    <button class="delete-btn" onclick="openDeleteModal(${index})">🗑️ Delete Record</button>
+                `;
+                recordList.appendChild(card);
+            });
+        }
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const date = document.getElementById('date').value;
+            const ipa = document.getElementById('ipa').value;
+            const dettol = document.getElementById('dettol').value;
+            const savlon = document.getElementById('savlon').value;
+            const sodium = document.getElementById('sodium').value;
+
+            const newRecord = { date, ipa, dettol, savlon, sodium };
+            const records = JSON.parse(localStorage.getItem('usageRecordsEn')) || [];
+            records.push(newRecord);
+            localStorage.setItem('usageRecordsEn', JSON.stringify(records));
+
+            form.reset();
+            document.getElementById('date').valueAsDate = new Date(); 
+            loadRecords(); 
+            showToast("Record Saved Successfully!");
+        });
+
+        let currentDeleteIndex = null;
+        let countdownTimer = null;
+
+        function openDeleteModal(index) {
+            currentDeleteIndex = index;
+            const modal = document.getElementById('deleteModal');
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            const countdownText = document.getElementById('countdownText');
+            
+            confirmBtn.classList.remove('visible');
+            countdownText.style.display = 'inline';
+            
+            let timeLeft = 10;
+            countdownText.innerText = `Wait ${timeLeft}s...`;
+            
+            modal.classList.add('active');
+
+            countdownTimer = setInterval(() => {
+                timeLeft--;
+                countdownText.innerText = `Wait ${timeLeft}s...`;
+                
+                if(timeLeft <= 0) {
+                    clearInterval(countdownTimer);
+                    countdownText.style.display = 'none';
+                    confirmBtn.classList.add('visible'); 
+                }
+            }, 1000);
+        }
+
+        function closeModal() {
+            clearInterval(countdownTimer); 
+            document.getElementById('deleteModal').classList.remove('active');
+        }
+
+        function executeDelete() {
+            closeModal();
+            const cardToRemove = document.getElementById(`record-${currentDeleteIndex}`);
+            if(cardToRemove) {
+                cardToRemove.style.animation = 'slideOutLeft 0.5s ease-in forwards';
+                
+                setTimeout(() => {
+                    const records = JSON.parse(localStorage.getItem('usageRecordsEn')) || [];
+                    records.splice(currentDeleteIndex, 1);
+                    localStorage.setItem('usageRecordsEn', JSON.stringify(records));
+                    loadRecords();
+                }, 500); 
+            }
+        }
+
+        loadRecords();
+    </script>
+</body>
+</html>
